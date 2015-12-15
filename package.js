@@ -11,7 +11,7 @@ Package.describe({
 });
 
 Npm.depends({
-   "nats": "0.5.0"
+//   "nats": "0.5.0" // upstream NATS library does not support NodeJS <v0.12.x
 });
 
 Package.onUse(function(api) {
@@ -19,11 +19,12 @@ Package.onUse(function(api) {
   api.use('ecmascript','server');
   api.addFiles('nats.js','server');
   api.export('nats','server');
+  api.export('natsConnect','server');
 });
 
 Package.onTest(function(api) {
   api.use('ecmascript');
   api.use('tinytest');
-  api.use('cycore:nats');
-  api.addFiles('nats-tests.js');
+  api.use('cycore:nats', 'server');
+  api.addFiles('nats-tests.js', 'server');
 });
