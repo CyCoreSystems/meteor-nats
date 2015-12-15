@@ -56,22 +56,22 @@ Meteor.setTimeout(function() {
 }, 1000);
 
 // Request stream
-var sid = nats.request('myReq:4329', function(resp) {
+var sid = nc.request('myReq:4329', function(resp) {
    console.log("Got a response in msg stream: " + resp);
 });
 
 // Request with automatic unsubscribe
-nats.request('help', null /* queue Id */, {max: 1}, function(resp) {
+nc.request('help', null /* queue Id */, {max: 1}, function(resp) {
    console.log('Got a response for the helpReq: ' + resp);
 });
 
 // Reply handler
-nats.subscribe('help', function(req, replyTo) {
-   nats.publish(replyTo, 'Here is some food.');
+nc.subscribe('help', function(req, replyTo) {
+   nc.publish(replyTo, 'Here is some food.');
 });
 
 // Close the client connection
-nats.close();
+nc.close();
 ```
 
 See the [node-nats](http://github.com/nats-io/node-nats) for more information.
