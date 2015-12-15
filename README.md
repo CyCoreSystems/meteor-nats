@@ -3,13 +3,30 @@
 [NATS](http://nats.io) is a pub-sub messaging system.  This package wraps the [NodeJS](http://nodejs.org) 
 [nats](http://github.com/nats-io/node-nats) client for use with [Meteor](http://meteor.com).
 
+## Caveats (especially TLS)
+
+`node-nats` does not support NodeJS v0.10.x, so until Meteor gets support for modern versions
+of NodeJS, we have to do some kludge-work to get this going.
+
+Even then, **THIS VERSION WILL NOT WORK WITH TLS** due to incompatibilities, despite the fact
+that the code is present.  Because this package is exported only on the server side, you can
+still use TLS between your Meteor client and server.  It is only the NATS client which cannot
+use TLS.
+
+Follow meteor/meteor#5124 to see when this can be fixed.  Then we can use the Npm package without
+the kludgy direct modification of the upstream client.
+
 ## Basic Usage
 
-The `nats` global is made available for use by the Meteor server.  The documentation on for the Node client
-should generally be correct, though it is likely that not all methods are implemented.
+The `nats` global is made available for use by the Meteor server, but in general, you
+should not interact with it directly.  Instead, use the wrapper `natsConnect()` to obtain
+a wrapped copy of the nats client connection.  The documentation on for the Node client
+should generally be correct for everything else, once you have the wrapped client connection.
 
 ```javascript
-var nc = nats.connect({
+var nc = natsConnect() // use all default values; connect to localhost:4222 as the NATS server
+// or
+var nc = natsConnect({
    // This connectionOptions object is entirely optional; null may take its place, as can
    // any of its properties be omitted.
    servers: ['nats://server1.tld:4222','nats://server2.example.com:4222'], // may be an array of strings or a simple string
@@ -44,7 +61,7 @@ var sid = nats.request('myReq:4329', function(resp) {
 });
 
 // Request with automatic unsubscribe
-nats.request('helpReq', null /* queue Id */, {max: 1}, function(resp) {
+nats.request('help', null /* queue Id */, {max: 1}, function(resp) {
    console.log('Got a response for the helpReq: ' + resp);
 });
 
@@ -58,6 +75,3 @@ nats.close();
 ```
 
 See the [node-nats](http://github.com/nats-io/node-nats) for more information.
-
-
-_License_: MIT
