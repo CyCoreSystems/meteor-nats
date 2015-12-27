@@ -1009,25 +1009,25 @@ natsConnect = function(connOpts) {
    var asyncMethods = [
       //'createInbox',     // sync
       //'close',           // sync
-      'flush',             // callback has no arguments
-      'publish',           // callback has no arguments
-      'subscribe',         // callback is unrelated to execution; has no error arg
+      //'flush',           // callback has no arguments, but callback indicates completion --> must not be wrapped, though, since it is called internally
+      'publish',           // callback has no arguments, but callback indicates completion
+      'subscribe',         // callback is unrelated to execution; has no error arg, so it is effectively synchronous
       //'unsubscribe',     // sync
-      'timeout',           // callback is unrelated to execution; has no error arg
-      'request',           // has no error arg
+      'timeout',           // callback is unrelated to execution; has no error arg, so it is effectively synchronous
+      'request',           // has no error arg; failures are lost, but callback indicates completion.
       //'numSubscriptions' // sync
    ];
 
    // Make the connection
-   ncObj = nats.connect();
-
+   Fiber(function() {
+      ncObj = nats.connect();
+   }).run();
    
-   /*
    // Wrap each asynchronous method for Meteor
    asyncMethods.forEach(function(m) {
       var func = ncObj[m];
       ncObj[m] = Meteor.wrapAsync(func,ncObj);
    });
-   */
+
    return ncObj;
 };
