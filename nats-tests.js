@@ -22,7 +22,6 @@ Tinytest.addAsync('subscribe', function(test, done) {
    var codeword = "hello";
    var nc = natsConnect();
    var ssid = nc.subscribe('sub', {max:1}, function(msg) {
-      console.log("Got it:",msg);
       test.equal(msg, codeword,'Receives proper message');
       nc.unsubscribe(ssid);
       nc.close();
