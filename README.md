@@ -18,6 +18,11 @@ the kludgy direct modification of the upstream client.
 
 ## Basic Usage
 
+Add the package to your Meteor project with:
+```sh
+meteor add cycore:nats
+```
+
 The `nats` global is made available for use by the Meteor server, but in general, you
 should not interact with it directly.  Instead, use the wrapper `natsConnect()` to obtain
 a wrapped copy of the nats client connection.  The documentation on for the Node client
