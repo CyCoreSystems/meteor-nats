@@ -1019,6 +1019,7 @@ natsConnect = function(connOpts) {
    ];
 
    // Make the connection
+   Fiber = Npm.require('fibers');
    Fiber(function() {
       ncObj = nats.connect();
    }).run();
