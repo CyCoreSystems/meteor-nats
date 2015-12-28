@@ -1021,7 +1021,7 @@ natsConnect = function(connOpts) {
    // Make the connection
    Fiber = Npm.require('fibers');
    Fiber(function() {
-      ncObj = nats.connect();
+      ncObj = nats.connect(connOpts);
    }).run();
    
    // Wrap each asynchronous method for Meteor
