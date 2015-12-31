@@ -3,8 +3,9 @@
 [NATS](http://nats.io) is a pub-sub messaging system.  This package wraps the [NodeJS](http://nodejs.org) 
 [nats](http://github.com/nats-io/node-nats) client for use with [Meteor](http://meteor.com).
 
-## Caveats (especially TLS)
+## Caveats
 
+### TLS
 `node-nats` does not support NodeJS v0.10.x, so until Meteor gets support for modern versions
 of NodeJS, we have to do some kludge-work to get this going.
 
@@ -15,6 +16,21 @@ use TLS.
 
 Follow meteor/meteor#5124 to see when this can be fixed.  Then we can use the Npm package without
 the kludgy direct modification of the upstream client.
+
+### Hot code reload
+
+During development, the hot code reload on the server will not properly close your client
+connections or subscriptions.  As such, you will probably want to add a `SIGTERM` listener
+for each client:
+
+```javascript
+var nc = connectNats();
+nc.once('connect',Meteor.bindEnvironment(function() {
+   process.once('SIGTERM',function() {
+      return nc && nc.close && nc.close();
+   })
+}));
+```
 
 ## Basic Usage
 
